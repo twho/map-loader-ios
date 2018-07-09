@@ -5,7 +5,7 @@
 //  Created by Ho, Tsung Wei on 7/4/18.
 //  Copyright © 2018 Michael Ho. All rights reserved.
 //
-//  Used Cluster from efremidze on Github, current version 2.2.4
+//  Used Cluster from efremidze on Github, version 2.2.4
 //
 
 import MapKit
@@ -107,13 +107,14 @@ public class DefaultMapLoader: MapLoader {
     override public func generateClusteringView(annotation: Any) -> UIView? {
         // Decide if annotation appears to be as an annotation or cluster
         if let annotation = annotation as? ClusterAnnotation {
-            guard let style = annotation.style else { return nil }
             
             let identifier = "cluster"
+            let style = ClusterAnnotationStyle.color(clusterColor, radius: 25)
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if let view = view as? BorderedClusterAnnotationView {
                 view.annotation = annotation
-                view.configure(with: .color(clusterColor, radius: 25))
+                view.style = style
+                view.configure()
             } else {
                 view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style, borderColor: .white)
             }
