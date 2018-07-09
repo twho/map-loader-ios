@@ -89,7 +89,7 @@ Pod::Spec.new do |s|
   #
 
   s.source_files  = "MapLoader", "MapLoader/**/*.{swift,h,m}"
-  s.exclude_files = "MapLoader/MapLoaderDemo"
+  s.exclude_files = "MapLoader/MapLoaderDemo/**", "MapLoader/MapLoaderTests/**"
 
   # s.public_header_files = "Classes/**/*.h"
 
