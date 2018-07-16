@@ -32,13 +32,13 @@ Follow the instructions below to quickly setup MapView.
 ```swift
 let mapLoader = MapLoader()
 ```
-### Step 2: Setup MapView in ```swift viewWillAppear(_ animated: Bool)``` method
+### Step 2: Setup MapView in ```viewWillAppear(_ animated: Bool)``` method
 ```swift
 mapLoader.setupMapView(mapContainer: self.view, viewAboveMap: segmentControl, delegate: self)
 ```
-Note: You need to set delegate if you need to use ```swift MKMapViewDelegate```. Otherwise, you can leave it ```swift nil```
+Note: You need to set delegate if you need to use ```MKMapViewDelegate```. Otherwise, you can leave it ```nil```
 
-### Step 3: Resize the MapView in ```swift viewDidLayoutSubviews()```
+### Step 3: Resize the MapView in ```viewDidLayoutSubviews()```
 ```swift
 mapLoader.layoutMapView()
 ```
@@ -54,17 +54,17 @@ annotations.append(annotation)
 mapLoader.addAnnotations(annotations: annotations)
 ```
 
-### Step 5: Setup ```swift MKMapViewDelegate``` and use the following function.
+### Step 5: Setup ```MKMapViewDelegate``` and use the following function.
 ```swift
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-	return mapLoader.generateClusteringView(annotation: annotation) as? MKAnnotationView
+    return mapLoader.generateClusteringView(annotation: annotation) as? MKAnnotationView
 }
 ```
 
 ### Step 6: Refresh annotations and clusters when MapView region is changed
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-	mapLoader.refreshMap()
+    mapLoader.refreshMap()
 }
 ```
 
