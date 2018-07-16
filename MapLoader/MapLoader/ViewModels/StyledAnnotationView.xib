@@ -15,6 +15,8 @@
             <connections>
                 <outlet property="annotBackground" destination="jeo-mW-TMo" id="Mwp-yI-DFn"/>
                 <outlet property="annotImage" destination="aWO-ho-mx8" id="tfj-EM-hja"/>
+                <outlet property="annotImgLeftConstraint" destination="UKm-do-EGV" id="kl7-Vb-T5D"/>
+                <outlet property="annotImgRightConstraint" destination="w9Y-yT-LL1" id="N6y-G4-ojX"/>
                 <outlet property="annotImgTopConstraint" destination="n6l-LU-LWn" id="wo3-gc-vZY"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="hCY-W3-p1p"/>
             </connections>

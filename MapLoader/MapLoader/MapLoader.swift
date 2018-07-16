@@ -1,5 +1,5 @@
 //
-//  MapHandler.swift
+//  MapLoader.swift
 //  MapLoader
 //
 //  Created by Ho, Tsung Wei on 7/4/18.
@@ -10,21 +10,104 @@ import UIKit
 import CoreLocation
 import MapKit
 
+// MARK: MapLoaderFunction protocol
+/**
+ The protocol that defines the functions that a MapLoader should have and implement.
+ */
 protocol MapLoaderFunction {
+    /**
+     Set default zoom value.
+     
+     - Parameter value: the default zoom in float value
+     */
     func setDefaultZoom(_ value: Float)
+    
+    /**
+     Set map frame parameters and layout map. This function is Usually used in viewDidLayoutSubviews().
+     */
     func layoutMapView()
+    
+    /**
+     Setup MapView and insert it to container.
+     
+     - Parameter mapContainer: the view to insert MapView to
+     - Parameter viewAbove:    the view above the map, set nil if there is nothing above the MapView
+     - Parameter delegate:     the MapView delegate
+     */
     func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?)
+    
+    /**
+     Get MapView used by MapLoader.
+     
+     Returns any types of MapView
+     */
+    func getMapView() -> Any
+    
+    /**
+     Center current user location.
+     
+     - Paramter zoom: boolean to determine if zoom in MapView
+     */
     func centerCurrentLocation(zoom: Bool)
+    
+    /**
+     Add annotations to MapView.
+     
+     - Parameter annotations: an array of MLAnnotations to be added to MapView
+     */
     func addAnnotations(annotations: [MLAnnotation])
+    
+    /**
+     Remove all annotations.
+     */
     func removeAllAnnotations()
+    
+    /**
+     Remove certain annotation from the MapView.
+     
+     - Parameter annotation: the annotation to be removed from the map
+     */
     func removeAnnotation(annotation: MLAnnotation)
-    func refreshMap()
+    
+    /**
+     Refresh annotations on the MapView.
+     
+     - Paramter completion: the task to perform after map finished refresing. Set nil if there is no task
+     */
+    func refreshMap(completion: ((Bool)->Void)?)
+    
+    /**
+     Clean up memory used by the MapView and mapLoader.
+     */
     func cleanUpMapMemory()
 }
 
+// MARK: MapClusterFunction protocol
+/**
+ The protocol defines the functions that a MapLoader using annotation clustering should implement.
+ */
 protocol MapClusterFunction {
+    /**
+     Set minimum cluster count.
+     
+     - Parameter minCount: the minimum count for clustering annotations
+     */
     func setMinCountForClustering(minCount: Int)
+    
+    /**
+     Generate cluster views, only available for default map.
+     
+     - Parameter annotation: the annotation to be based on for generating view
+     
+     Returns an UIView that represents the view generated given annotaion
+     */
     func generateClusteringView(annotation: Any) -> UIView?
+    
+    /**
+     Set cluster color.
+     
+     - Parameter color: the color to be set to clusters
+     */
     func setClusterColor(color: UIColor)
 }
 
@@ -32,34 +115,63 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
     var LOG_TAG = "[MapHandler] "
     
-    // Variables accessible by other class
+    // MARK: Variables accessible by other class
     open var defaultZoom = 0.03
     open var clusterColor = UIColor(red:0.00, green:0.70, blue:0.36, alpha:1.0) // Green color
     
-    // In-class variables
+    // MARK: In-class variables
+    /**
+     Flag that indicates if the map is zoom in already.
+     */
     private var didDefaultZoomIn = false
-    private var oldLocation: CLLocation?
+    
+    /**
+     The MapView used by MapLoader.
+     */
     private var mapView: MKMapView!
+    
+    /**
+     The cluster manager for clustering annotations.
+     */
     private let clusterMgr = ClusterManager()
 
-    // Variables accessible by subclass
+    // MARK: Variables accessible by subclass
+    /**
+     The UIView container to contain the map.
+     */
     internal var mapContainer: UIView!
+    
+    /**
+     The LocationManager used by MapLoader.
+     */
     internal var locationMgr: CLLocationManager?
+    
+    /**
+     The most recent location updated by LocationManager.
+     */
     internal var mostRecentLocation: CLLocation?
+    
+    /**
+     The default location to show if MapLoader cannot retrieve location from LocationManager.
+     */
     internal var defaultLocation = CLLocationCoordinate2D(latitude: 42.301570, longitude: -71.479392)
     
+    // Init
     public override init() {
         super.init()
         
         setupLocationMgr()
     }
     
+    /**
+     Deserializing the object.
+     */
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     /**
-     Set default location which is used when the location manager cannot get current location
+     Set default location which is used when the location manager cannot get current location.
      
      - Parameter latitude: latitude of default location
      - Parameter longitude: longitude of default location
@@ -72,7 +184,6 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         defaultZoom = Double(value)
     }
     
-    // Should be put in viewDidLayoutSubviews()
     public func layoutMapView() {
         mapView.frame = mapContainer.frame
     }
@@ -128,9 +239,12 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         clusterMgr.removeAll()
     }
     
-    public func refreshMap() {
-        clusterMgr.reload(mapView: mapView)
-        oldLocation = self.mapView.userLocation.location
+    public func refreshMap(completion: ((Bool) -> Void)? = nil) {
+        if let completion = completion {
+            clusterMgr.reload(mapView: mapView, completion: completion)
+        } else {
+            clusterMgr.reload(mapView: mapView)
+        }
     }
     
     internal func cleanUpMapMemory() {
@@ -142,10 +256,9 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         clusterMgr.removeAll()
     }
     
-    public func onClickLocate() {
-        centerCurrentLocation(zoom: false)
-    }
-    
+    /**
+     Clean up memory usage.
+     */
     public func cleanUp() {
         cleanUpMapMemory()
         
@@ -154,6 +267,10 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         locationMgr = nil
     }
     
+    
+    /**
+     Setup LocationManager and start updating location.
+     */
     public func setupLocationMgr() {
         self.locationMgr = CLLocationManager()
         if let manager = self.locationMgr {
@@ -163,12 +280,10 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         }
     }
     
-    // Set minimum cluster count, only available for default map
     public func setMinCountForClustering(minCount: Int) {
         clusterMgr.minCountForClustering = minCount
     }
     
-    // Generate cluster views, only available for default map
     public func generateClusteringView(annotation: Any) -> UIView? {
         // Decide if annotation appears to be as an annotation or cluster
         if let annotation = annotation as? ClusterAnnotation {
@@ -214,8 +329,10 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     }
 }
 
+// MARK: CLLocationManagerDelegate
 extension MapLoader: CLLocationManagerDelegate {
     
+    // Handle location updates.
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let lastLocation = locations.last {
             mostRecentLocation = lastLocation
@@ -229,9 +346,17 @@ extension MapLoader: CLLocationManagerDelegate {
     }
 }
 
-// Animation
+// MARK: MapLoader built-in animations
 extension MapLoader {
-    
+    /**
+     Animations built-in in MapLoader.
+     
+     - fadeIn:   fade in the target view
+     - zoomIn:   enlarge the target view
+     - zoomOut:  reset the target view to original size
+     - bounceIn: show target view with bounce animation
+     - pop:      zoom in the target view then zoom it out immediately
+     */
     public enum AnnotationAnimation {
         case fadeIn
         case zoomIn
@@ -240,6 +365,14 @@ extension MapLoader {
         case pop
     }
     
+    /**
+     Perform the animation to multiple annotations.
+     
+     - Parameter annotations: the target annotation view to perform animation
+     - Parameter animation:   the animation type provided by MapLoader
+     - Parameter duration:    the time duration of the animation
+     - Parameter completion:  the task to do after the animation is finished
+     */
     public func animate(annotations: [UIView], animation: AnnotationAnimation, duration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
         switch animation {
         case .fadeIn:
@@ -258,8 +391,11 @@ extension MapLoader {
                 annotations.forEach { $0.transform = CGAffineTransform.identity }
             }, completion: completion)
         case .bounceIn:
-            let offset = CGPoint.zero
-            annotations.forEach { $0.transform = CGAffineTransform(translationX: offset.x + 0, y: offset.y + 0) }
+            annotations.forEach {
+                let offset = CGPoint(x: 0, y: $0.frame.height - $0.frame.minY)
+                $0.transform = CGAffineTransform(translationX: offset.x + 0, y: offset.y + 0)
+            }
+            
             UIView.animate(
                 withDuration: duration, delay: 0, usingSpringWithDamping: 0.58, initialSpringVelocity: 3,
                 options: .curveEaseOut, animations: {
@@ -281,6 +417,14 @@ extension MapLoader {
         }
     }
     
+    /**
+     Perform the animation to single annotation.
+     
+     - Parameter annotations: the target annotation view to perform animation
+     - Parameter animation:   the animation type provided by MapLoader
+     - Parameter duration:    the time duration of the animation
+     - Parameter completion:  the task to do after the animation is finished
+     */
     public func animate(annotation: UIView, animation: AnnotationAnimation, duration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
         animate(annotations: [annotation], animation: animation, duration: duration, completion: completion)
     }

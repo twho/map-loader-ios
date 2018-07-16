@@ -9,14 +9,26 @@
 import UIKit
 import CoreLocation
 
-// Map loader annotation
+// MapLoader annotation
 open class MLAnnotation: Annotation {
+    
+    /**
+     The foreground or entire image of the annotation.
+     */
     open var annotImg: UIImage?
+    
+    /**
+     The background color of the annotation.
+     */
     open var annotBgColor: UIColor?
+    
+    /**
+     The data to be stored with the annotation object.
+     */
     open var data: Any?
     
     /**
-     Init annotation view with a foreground image with a background color set on annotation view
+     Init annotation view with a foreground image with a background color set on annotation view.
      
      - Parameter coordinate: the geo-location of the annotation
      - Parameter annotImg: the foreground image of the annotation
@@ -33,7 +45,7 @@ open class MLAnnotation: Annotation {
     }
     
     /**
-     Init annotation view with a image that represents the whole annotation view
+     Init annotation view with a image that represents the whole annotation view.
      
      - Parameter coordinate: the geo-location of the annotation
      - Parameter annotImg: the image of the entire annotation view without any additional background
