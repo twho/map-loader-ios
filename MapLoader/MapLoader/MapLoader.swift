@@ -6,20 +6,42 @@
 //  Copyright © 2018 Michael Ho. All rights reserved.
 //
 
+import UIKit
 import CoreLocation
+import MapKit
+
+protocol MapLoaderFunction {
+    func setDefaultZoom(_ value: Float)
+    func layoutMapView()
+    func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?)
+    func centerCurrentLocation(zoom: Bool)
+    func addAnnotations(annotations: [MLAnnotation])
+    func removeAllAnnotations()
+    func removeAnnotation(annotation: MLAnnotation)
+    func refreshMap()
+    func cleanUpMapMemory()
+}
+
+protocol MapClusterFunction {
+    func setMinCountForClustering(minCount: Int)
+    func generateClusteringView(annotation: Any) -> UIView?
+    func setClusterColor(color: UIColor)
+}
 
 open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
     var LOG_TAG = "[MapHandler] "
     
+    // Variables accessible by other class
+    open var defaultZoom = 0.03
+    open var clusterColor = UIColor(red:0.00, green:0.70, blue:0.36, alpha:1.0) // Green color
+    
     // In-class variables
     private var didDefaultZoomIn = false
-    private let implErrMsg = "\(#function) must be implemented by children class"
-    private let implByDfltMapMsg = "\(#function) should be implemented by DefaultMapLoader, but is not available for Google map system"
-    
-    // Variables accessible by other class
-    public var clusterColor = UIColor(red:0.23, green:0.64, blue:0.39, alpha:1.0) // Green color
-    
+    private var oldLocation: CLLocation?
+    private var mapView: MKMapView!
+    private let clusterMgr = ClusterManager()
+
     // Variables accessible by subclass
     internal var mapContainer: UIView!
     internal var locationMgr: CLLocationManager?
@@ -47,44 +69,77 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     }
     
     public func setDefaultZoom(_ value: Float) {
-        fatalError(LOG_TAG + implErrMsg)
+        defaultZoom = Double(value)
     }
     
     // Should be put in viewDidLayoutSubviews()
     public func layoutMapView() {
-        fatalError(LOG_TAG + implErrMsg)
+        mapView.frame = mapContainer.frame
     }
     
     public func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?) {
-        fatalError(LOG_TAG + implErrMsg)
+        self.mapContainer = mapContainer
+        mapView = MKMapView()
+        mapView.isZoomEnabled = true
+        mapView.showsUserLocation = true
+        
+        if let delegate = delegate as? MKMapViewDelegate {
+            mapView.delegate = delegate
+        }
+        
+        if let viewAboveMap = viewAboveMap {
+            self.mapContainer.insertSubview(mapView, belowSubview: viewAboveMap)
+        } else {
+            self.mapContainer.insertSubview(mapView, at: 0)
+        }
     }
     
-    public func getMapView() -> Any {
-        fatalError(LOG_TAG + implErrMsg)
+    open func getMapView() -> Any {
+        return self.mapView
     }
     
     public func centerCurrentLocation(zoom: Bool) {
-        fatalError(LOG_TAG + implErrMsg)
+        guard let location = mostRecentLocation else { return }
+        
+        var region: MKCoordinateRegion
+        if zoom {
+            region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+        } else {
+            region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: defaultZoom, longitudeDelta: defaultZoom))
+        }
+        
+        mapView.setRegion(region, animated: true)
     }
     
     public func addAnnotations(annotations: [MLAnnotation]) {
-        fatalError(LOG_TAG + implErrMsg)
-    }
-    
-    public func removeAllAnnotations() {
-        fatalError(LOG_TAG + implErrMsg)
+        DispatchQueue.main.async {
+            // Let cluster manager manage clusters after loading all annotations
+            self.clusterMgr.add(annotations)
+            self.clusterMgr.reload(mapView: self.mapView)
+        }
     }
     
     public func removeAnnotation(annotation: MLAnnotation) {
-        fatalError(LOG_TAG + implErrMsg)
+        self.mapView.removeAnnotation(annotation)
+    }
+    
+    public func removeAllAnnotations() {
+        mapView.removeAnnotations(mapView.annotations)
+        clusterMgr.removeAll()
     }
     
     public func refreshMap() {
-        fatalError(LOG_TAG + implErrMsg)
+        clusterMgr.reload(mapView: mapView)
+        oldLocation = self.mapView.userLocation.location
     }
     
-    public func cleanUpMapMemory() {
-        fatalError(LOG_TAG + implErrMsg)
+    internal func cleanUpMapMemory() {
+        mapView.removeAnnotations(mapView.annotations)
+        mapView.delegate = nil
+        mapView.showsUserLocation = false
+        mapView.removeFromSuperview()
+        mapView = nil
+        clusterMgr.removeAll()
     }
     
     public func onClickLocate() {
@@ -110,35 +165,53 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
     // Set minimum cluster count, only available for default map
     public func setMinCountForClustering(minCount: Int) {
-        fatalError(LOG_TAG + implByDfltMapMsg)
+        clusterMgr.minCountForClustering = minCount
     }
     
     // Generate cluster views, only available for default map
     public func generateClusteringView(annotation: Any) -> UIView? {
-        fatalError(LOG_TAG + implByDfltMapMsg)
+        // Decide if annotation appears to be as an annotation or cluster
+        if let annotation = annotation as? ClusterAnnotation {
+            let identifier = "cluster"
+            let style = ClusterAnnotationStyle.color(clusterColor, radius: 25)
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if let view = view as? BorderedClusterAnnotationView {
+                view.annotation = annotation
+                view.style = style
+                view.configure()
+            } else {
+                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style, borderColor: .white)
+            }
+            return view
+        } else if let annotation = annotation as? MLAnnotation {
+            let identifier = "marker"
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if let view = view {
+                view.annotation = annotation
+            } else {
+                if #available(iOS 11.0, *), let _ = annotation.annotBgColor {
+                    view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                } else {
+                    view = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                }
+            }
+            
+            if #available(iOS 11.0, *), let annotBgColor = annotation.annotBgColor {
+                (view as! MKMarkerAnnotationView).glyphImage = annotation.annotImg
+                (view as! MKMarkerAnnotationView).markerTintColor = annotBgColor
+            } else {
+                view?.image = annotation.annotImg
+            }
+            
+            return view
+        }
+        
+        return nil
     }
     
     public func setClusterColor(color: UIColor) {
         self.clusterColor = color
     }
-}
-
-protocol MapLoaderFunction {
-    func setDefaultZoom(_ value: Float)
-    func layoutMapView()
-    func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?)
-    func centerCurrentLocation(zoom: Bool)
-    func addAnnotations(annotations: [MLAnnotation])
-    func removeAllAnnotations()
-    func removeAnnotation(annotation: MLAnnotation)
-    func refreshMap()
-    func cleanUpMapMemory()
-}
-
-protocol MapClusterFunction {
-    func setMinCountForClustering(minCount: Int)
-    func generateClusteringView(annotation: Any) -> UIView?
-    func setClusterColor(color: UIColor)
 }
 
 extension MapLoader: CLLocationManagerDelegate {
@@ -153,5 +226,62 @@ extension MapLoader: CLLocationManagerDelegate {
             centerCurrentLocation(zoom: false)
             didDefaultZoomIn = true
         }
+    }
+}
+
+// Animation
+extension MapLoader {
+    
+    public enum AnnotationAnimation {
+        case fadeIn
+        case zoomIn
+        case zoomOut
+        case bounceIn
+        case pop
+    }
+    
+    public func animate(annotations: [UIView], animation: AnnotationAnimation, duration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
+        switch animation {
+        case .fadeIn:
+            annotations.forEach { $0.alpha = 0 }
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                annotations.forEach { $0.alpha = 1 }
+            }, completion: completion)
+        case .zoomIn:
+            annotations.forEach { $0.transform = CGAffineTransform.identity }
+            UIView.animate(withDuration: duration, animations: {
+                annotations.forEach { $0.transform = CGAffineTransform(scaleX: 1.5, y: 1.5) }
+            }, completion: completion)
+        case .zoomOut:
+            annotations.forEach { $0.transform = CGAffineTransform(scaleX: 1.5, y: 1.5) }
+            UIView.animate(withDuration: duration, animations: {
+                annotations.forEach { $0.transform = CGAffineTransform.identity }
+            }, completion: completion)
+        case .bounceIn:
+            let offset = CGPoint.zero
+            annotations.forEach { $0.transform = CGAffineTransform(translationX: offset.x + 0, y: offset.y + 0) }
+            UIView.animate(
+                withDuration: duration, delay: 0, usingSpringWithDamping: 0.58, initialSpringVelocity: 3,
+                options: .curveEaseOut, animations: {
+                    annotations.forEach {
+                        $0.transform = .identity
+                        $0.alpha = 1
+                    }
+            }, completion: completion)
+        case .pop:
+            for annotation in annotations {
+                UIView.animate(withDuration: duration/2, delay: 0, usingSpringWithDamping: 0.55, initialSpringVelocity: 3, animations: {
+                    annotation.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+                }, completion: { finished in
+                    UIView.animate(withDuration: duration/2, animations: {
+                        annotation.transform = CGAffineTransform.identity
+                    }, completion: completion)
+                })
+            }
+        }
+    }
+    
+    public func animate(annotation: UIView, animation: AnnotationAnimation, duration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
+        animate(annotations: [annotation], animation: animation, duration: duration, completion: completion)
     }
 }

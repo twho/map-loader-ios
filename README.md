@@ -22,7 +22,8 @@ it, simply add the following line to your Podfile:
 ```ruby
 $ pod 'MapLoader'
 ```
-If you don't use CocoaPods, you can download the entire project then drag and drop all the classes and use it in your project.
+If you don't use CocoaPods, you can download the entire project then drag and drop all the classes and use them in your project.
 
 ## Credits
 * https://github.com/efremidze/Cluster
+* https://github.com/keithito/SimpleAnimation
