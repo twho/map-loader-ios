@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		307176F120F3EF18003453CD /* StyledAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307176F020F3EF18003453CD /* StyledAnnotationView.swift */; };
+		307176F320F3EF52003453CD /* StyledAnnotationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 307176F220F3EF52003453CD /* StyledAnnotationView.xib */; };
+		307176F820F3F11A003453CD /* ic_annot1.png in Resources */ = {isa = PBXBuildFile; fileRef = 307176F620F3F11A003453CD /* ic_annot1.png */; };
+		307176FA20F3F1EC003453CD /* ic_sample1.png in Resources */ = {isa = PBXBuildFile; fileRef = 307176F920F3F1EC003453CD /* ic_sample1.png */; };
 		30A4596820F3E6F40043C0D4 /* MapLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30A4595E20F3E6F40043C0D4 /* MapLoader.framework */; };
 		30A4596D20F3E6F40043C0D4 /* MapLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4596C20F3E6F40043C0D4 /* MapLoaderTests.swift */; };
 		30A4596F20F3E6F40043C0D4 /* MapLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 30A4596120F3E6F40043C0D4 /* MapLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -32,6 +36,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		307176F020F3EF18003453CD /* StyledAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledAnnotationView.swift; sourceTree = "<group>"; };
+		307176F220F3EF52003453CD /* StyledAnnotationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StyledAnnotationView.xib; sourceTree = "<group>"; };
+		307176F620F3F11A003453CD /* ic_annot1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_annot1.png; sourceTree = "<group>"; };
+		307176F920F3F1EC003453CD /* ic_sample1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_sample1.png; sourceTree = "<group>"; };
 		30A4595E20F3E6F40043C0D4 /* MapLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MapLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30A4596120F3E6F40043C0D4 /* MapLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MapLoader.h; sourceTree = "<group>"; };
 		30A4596220F3E6F40043C0D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -68,6 +76,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		307176F420F3EFC4003453CD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				307176F920F3F1EC003453CD /* ic_sample1.png */,
+				307176F620F3F11A003453CD /* ic_annot1.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		30A4595420F3E6F40043C0D4 = {
 			isa = PBXGroup;
 			children = (
@@ -95,6 +112,7 @@
 				30A4598520F3E7530043C0D4 /* Cluster */,
 				30A4596120F3E6F40043C0D4 /* MapLoader.h */,
 				30A4596220F3E6F40043C0D4 /* Info.plist */,
+				307176F420F3EFC4003453CD /* Resources */,
 			);
 			path = MapLoader;
 			sourceTree = "<group>";
@@ -113,6 +131,8 @@
 			children = (
 				30A4597E20F3E7300043C0D4 /* MLAnnotation.swift */,
 				30A4598020F3E7300043C0D4 /* BorderedClusterAnnotationView.swift */,
+				307176F020F3EF18003453CD /* StyledAnnotationView.swift */,
+				307176F220F3EF52003453CD /* StyledAnnotationView.xib */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -222,6 +242,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				307176F820F3F11A003453CD /* ic_annot1.png in Resources */,
+				307176FA20F3F1EC003453CD /* ic_sample1.png in Resources */,
+				307176F320F3EF52003453CD /* StyledAnnotationView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30A4598C20F3E7530043C0D4 /* QuadTree.swift in Sources */,
+				307176F120F3EF18003453CD /* StyledAnnotationView.swift in Sources */,
 				30A4598E20F3E7530043C0D4 /* Cluster.swift in Sources */,
 				30A4598220F3E7300043C0D4 /* MLAnnotation.swift in Sources */,
 				30A4598420F3E7300043C0D4 /* BorderedClusterAnnotationView.swift in Sources */,
