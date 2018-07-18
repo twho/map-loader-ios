@@ -105,7 +105,7 @@ Pod::Spec.new do |s|
   # s.resource  = "icon.png"
   # s.resources = "MapLoader/Resources/**"
     s.resource_bundles = {
-        'mlres' => ['MapLoader/MapLoader/Resources/**']
+        'mlres' => ['MapLoader/MapLoader/CustomMapAnnotation/Resources/**']
     }
 
 
@@ -118,7 +118,7 @@ Pod::Spec.new do |s|
   #  the lib prefix of their name.
   #
 
-  s.framework  = "CustomMapAnnotation"
+  # s.framework  = "CustomMapAnnotation"
   # s.frameworks = "SomeFramework", "AnotherFramework"
 
   # s.library   = "iconv"

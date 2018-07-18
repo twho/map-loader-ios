@@ -9,7 +9,6 @@
 import UIKit
 import CoreLocation
 import MapKit
-import CustomMapAnnotation
 
 open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
