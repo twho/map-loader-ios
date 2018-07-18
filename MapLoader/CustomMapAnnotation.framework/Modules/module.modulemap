@@ -1,0 +1,11 @@
+framework module CustomMapAnnotation {
+  umbrella header "CustomMapAnnotation.h"
+
+  export *
+  module * { export * }
+}
+
+module CustomMapAnnotation.Swift {
+    header "CustomMapAnnotation-Swift.h"
+    requires objc
+}

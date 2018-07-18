@@ -9,107 +9,7 @@
 import UIKit
 import CoreLocation
 import MapKit
-
-// MARK: MapLoaderFunction protocol
-/**
- The protocol that defines the functions that a MapLoader should have and implement.
- */
-protocol MapLoaderFunction {
-    /**
-     Set default zoom value.
-     
-     - Parameter value: the default zoom in float value
-     */
-    func setDefaultZoom(_ value: Float)
-    
-    /**
-     Set map frame parameters and layout map. This function is Usually used in viewDidLayoutSubviews().
-     */
-    func layoutMapView()
-    
-    /**
-     Setup MapView and insert it to container.
-     
-     - Parameter mapContainer: the view to insert MapView to
-     - Parameter viewAbove:    the view above the map, set nil if there is nothing above the MapView
-     - Parameter delegate:     the MapView delegate
-     */
-    func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?)
-    
-    /**
-     Get MapView used by MapLoader.
-     
-     Returns any types of MapView
-     */
-    func getMapView() -> Any
-    
-    /**
-     Center current user location.
-     
-     - Paramter zoom: boolean to determine if zoom in MapView
-     */
-    func centerCurrentLocation(zoom: Bool)
-    
-    /**
-     Add annotations to MapView.
-     
-     - Parameter annotations: an array of MLAnnotations to be added to MapView
-     */
-    func addAnnotations(annotations: [MLAnnotation])
-    
-    /**
-     Remove all annotations.
-     */
-    func removeAllAnnotations()
-    
-    /**
-     Remove certain annotation from the MapView.
-     
-     - Parameter annotation: the annotation to be removed from the map
-     */
-    func removeAnnotation(annotation: MLAnnotation)
-    
-    /**
-     Refresh annotations on the MapView.
-     
-     - Paramter completion: the task to perform after map finished refresing. Set nil if there is no task
-     */
-    func refreshMap(completion: ((Bool)->Void)?)
-    
-    /**
-     Clean up memory used by the MapView and mapLoader.
-     */
-    func cleanUpMapMemory()
-}
-
-// MARK: MapClusterFunction protocol
-/**
- The protocol defines the functions that a MapLoader using annotation clustering should implement.
- */
-protocol MapClusterFunction {
-    /**
-     Set minimum cluster count.
-     
-     - Parameter minCount: the minimum count for clustering annotations
-     */
-    func setMinCountForClustering(minCount: Int)
-    
-    /**
-     Generate cluster views, only available for default map.
-     
-     - Parameter annotation: the annotation to be based on for generating view
-     
-     Returns an UIView that represents the view generated given annotaion
-     */
-    func generateClusteringView(annotation: Any) -> UIView?
-    
-    /**
-     Set cluster color.
-     
-     - Parameter color: the color to be set to clusters
-     */
-    func setClusterColor(color: UIColor)
-}
+import CustomMapAnnotation
 
 open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
@@ -124,6 +24,11 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
      Flag that indicates if the map is zoom in already.
      */
     private var didDefaultZoomIn = false
+    
+    /**
+     Stored expanded annotation.
+     */
+    private var currentExpandAnnotation: MLAnnotation?
     
     /**
      The MapView used by MapLoader.
@@ -232,6 +137,7 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
     public func removeAnnotation(annotation: MLAnnotation) {
         self.mapView.removeAnnotation(annotation)
+        self.clusterMgr.remove(annotation)
     }
     
     public func removeAllAnnotations() {
@@ -247,12 +153,23 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         }
     }
     
+    public func setMaxZoomLevel(maxZoom: Double) {
+        clusterMgr.maxZoomLevel = maxZoom
+    }
+    
+    public func getCurrentZoomLevel() -> Double {
+        return clusterMgr.zoomLevel
+    }
+    
     internal func cleanUpMapMemory() {
-        mapView.removeAnnotations(mapView.annotations)
-        mapView.delegate = nil
-        mapView.showsUserLocation = false
-        mapView.removeFromSuperview()
-        mapView = nil
+        if nil != mapView {
+            self.mapView.removeAnnotations(mapView.annotations)
+            self.mapView.delegate = nil
+            self.mapView.showsUserLocation = false
+            self.mapView.removeFromSuperview()
+            self.mapView = nil
+        }
+        
         clusterMgr.removeAll()
     }
     
@@ -299,25 +216,25 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
             }
             return view
         } else if let annotation = annotation as? MLAnnotation {
+            // Check if ExpandAnnotationView is available
             let identifier = "marker"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if let view = view {
                 view.annotation = annotation
             } else {
-                if #available(iOS 11.0, *), let _ = annotation.annotBgColor {
+                if #available(iOS 11.0, *), annotation.useDefaultView {
                     view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 } else {
                     view = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 }
             }
             
-            if #available(iOS 11.0, *), let annotBgColor = annotation.annotBgColor {
+            if #available(iOS 11.0, *), annotation.useDefaultView {
                 (view as! MKMarkerAnnotationView).glyphImage = annotation.annotImg
-                (view as! MKMarkerAnnotationView).markerTintColor = annotBgColor
+                (view as! MKMarkerAnnotationView).markerTintColor = annotation.annotBgColor
             } else {
                 view?.image = annotation.annotImg
             }
-            
             return view
         }
         
