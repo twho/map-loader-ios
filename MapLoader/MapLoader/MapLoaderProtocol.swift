@@ -8,7 +8,7 @@
 
 import UIKit
 
-// MARK: MapLoaderFunction protocol
+// MARK: - MapLoaderFunction protocol
 /**
  The protocol that defines the functions that a MapLoader should have and implement.
  */
@@ -94,7 +94,7 @@ protocol MapLoaderFunction {
     func cleanUpMapMemory()
 }
 
-// MARK: MapClusterFunction protocol
+// MARK: - MapClusterFunction protocol
 /**
  The protocol defines the functions that a MapLoader using annotation clustering should implement.
  */
