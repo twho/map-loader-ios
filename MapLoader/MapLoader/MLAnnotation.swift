@@ -9,7 +9,6 @@
 import UIKit
 import CoreLocation
 import MapKit
-import CustomMapAnnotation
 
 // MapLoader annotation
 open class MLAnnotation: Annotation {

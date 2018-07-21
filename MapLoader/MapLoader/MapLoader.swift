@@ -9,17 +9,16 @@
 import UIKit
 import CoreLocation
 import MapKit
-import CustomMapAnnotation
 
 open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     
     var LOG_TAG = "[MapHandler] "
     
-    // MARK: Variables accessible by other class
+    // MARK: - Variables accessible by other class
     open var defaultZoom = 0.03
     open var clusterColor = UIColor(red:0.00, green:0.70, blue:0.36, alpha:1.0) // Green color
     
-    // MARK: In-class variables
+    // MARK: - In-class variables
     /**
      Flag that indicates if the map is zoom in already.
      */
@@ -40,7 +39,7 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
      */
     private let clusterMgr = ClusterManager()
 
-    // MARK: Variables accessible by subclass
+    // MARK: - Variables accessible by subclass
     /**
      The UIView container to contain the map.
      */
@@ -115,7 +114,7 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     }
     
     public func centerCurrentLocation(zoom: Bool) {
-        guard let location = mostRecentLocation else { return }
+        guard let location = mostRecentLocation, let mapView = mapView else { return }
         
         var region: MKCoordinateRegion
         if zoom {
@@ -136,13 +135,19 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     }
     
     public func removeAnnotation(annotation: MLAnnotation) {
-        self.mapView.removeAnnotation(annotation)
         self.clusterMgr.remove(annotation)
+        
+        // Check if mapView is nil
+        guard let mapView = mapView else { return }
+        mapView.removeAnnotation(annotation)
     }
     
     public func removeAllAnnotations() {
-        mapView.removeAnnotations(mapView.annotations)
         clusterMgr.removeAll()
+        
+        // Check if mapView is nil
+        guard let mapView = mapView else { return }
+        mapView.removeAnnotations(mapView.annotations)
     }
     
     public func refreshMap(completion: ((Bool) -> Void)? = nil) {
@@ -246,7 +251,7 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     }
 }
 
-// MARK: CLLocationManagerDelegate
+// MARK: - CLLocationManagerDelegate
 extension MapLoader: CLLocationManagerDelegate {
     
     // Handle location updates.
@@ -263,7 +268,7 @@ extension MapLoader: CLLocationManagerDelegate {
     }
 }
 
-// MARK: MapLoader built-in animations
+// MARK: - MapLoader built-in animations
 extension MapLoader {
     /**
      Animations built-in in MapLoader.
