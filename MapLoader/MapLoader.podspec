@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "MapLoader"
-  s.version      = "0.0.7"
+  s.version      = "0.0.8"
   s.summary      = "Easily loads maps, customized annotations and clusters."
 
   # This description is used to generate tags and improve search results.
@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/twho/MapLoader-iOS.git", :tag => "0.0.7" }
+  s.source       = { :git => "https://github.com/twho/MapLoader-iOS.git", :tag => "0.0.8" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -132,6 +132,6 @@ Pod::Spec.new do |s|
 
   s.swift_version = "4.1"
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency 'CustomMapAnnotation', '~> 0.0.4'
+  s.dependency 'CustomMapAnnotation'
 
 end
