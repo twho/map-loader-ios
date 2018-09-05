@@ -18,6 +18,7 @@
 		30A4598D20F3E7530043C0D4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4598820F3E7530043C0D4 /* Extensions.swift */; };
 		30A4598E20F3E7530043C0D4 /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4598920F3E7530043C0D4 /* Cluster.swift */; };
 		30A4598F20F3E7530043C0D4 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4598A20F3E7530043C0D4 /* Annotation.swift */; };
+		30DF1150214024FD004161BB /* GoogleMapLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF114F214024FD004161BB /* GoogleMapLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		30A4598820F3E7530043C0D4 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		30A4598920F3E7530043C0D4 /* Cluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
 		30A4598A20F3E7530043C0D4 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
+		30DF114F214024FD004161BB /* GoogleMapLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				30A4597820F3E70E0043C0D4 /* MapLoader.swift */,
+				30DF114F214024FD004161BB /* GoogleMapLoader.swift */,
 				305FB39E20FEEFA00059863D /* MapLoaderProtocol.swift */,
 				305FB39F20FEEFA00059863D /* MLAnnotation.swift */,
 				30A4598520F3E7530043C0D4 /* Cluster */,
@@ -230,6 +233,7 @@
 			files = (
 				30A4598C20F3E7530043C0D4 /* QuadTree.swift in Sources */,
 				30A4598E20F3E7530043C0D4 /* Cluster.swift in Sources */,
+				30DF1150214024FD004161BB /* GoogleMapLoader.swift in Sources */,
 				305FB3A120FEEFA00059863D /* MLAnnotation.swift in Sources */,
 				30A4597920F3E70E0043C0D4 /* MapLoader.swift in Sources */,
 				30A4598F20F3E7530043C0D4 /* Annotation.swift in Sources */,

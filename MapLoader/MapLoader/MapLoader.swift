@@ -17,23 +17,24 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     // MARK: - Variables accessible by other class
     open var defaultZoom = 0.03
     open var clusterColor = UIColor(red:0.00, green:0.70, blue:0.36, alpha:1.0) // Green color
-    
+    open var showMyLocationButton: Bool = false {
+        didSet {
+            showLocateButton(showMyLocationButton)
+        }
+    }
     // MARK: - In-class variables
     /**
      Flag that indicates if the map is zoom in already.
      */
     private var didDefaultZoomIn = false
-    
     /**
      Stored expanded annotation.
      */
     private var currentExpandAnnotation: MLAnnotation?
-    
     /**
      The MapView used by MapLoader.
      */
     private var mapView: MKMapView!
-    
     /**
      The cluster manager for clustering annotations.
      */
@@ -44,36 +45,32 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
      The UIView container to contain the map.
      */
     internal var mapContainer: UIView!
-    
     /**
      The LocationManager used by MapLoader.
      */
     internal var locationMgr: CLLocationManager?
-    
     /**
      The most recent location updated by LocationManager.
      */
     internal var mostRecentLocation: CLLocation?
-    
     /**
      The default location to show if MapLoader cannot retrieve location from LocationManager.
      */
     internal var defaultLocation = CLLocationCoordinate2D(latitude: 42.301570, longitude: -71.479392)
-    
-    // Init
+    /**
+     Initializer.
+     */
     public override init() {
         super.init()
         
         setupLocationMgr()
     }
-    
     /**
      Deserializing the object.
      */
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     /**
      Set default location which is used when the location manager cannot get current location.
      
@@ -83,15 +80,12 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
     public func setDefaultLocation(latitude: Double, longitude: Double){
         self.defaultLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
-    
     public func setDefaultZoom(_ value: Float) {
         defaultZoom = Double(value)
     }
-    
     public func layoutMapView() {
         mapView.frame = mapContainer.frame
     }
-    
     public func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?) {
         self.mapContainer = mapContainer
         mapView = MKMapView()
@@ -108,40 +102,37 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
             self.mapContainer.insertSubview(mapView, at: 0)
         }
     }
-    
+    public func showLocateButton(_ show: Bool) {
+        
+    }
     open func getMapView() -> Any {
         return self.mapView
     }
-    
     public func centerCurrentLocation(zoom: Bool) {
         guard let location = mostRecentLocation, let mapView = mapView else { return }
         
         var region: MKCoordinateRegion
         if zoom {
-            region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+            region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: defaultZoom/5, longitudeDelta: defaultZoom/5))
         } else {
             region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: defaultZoom, longitudeDelta: defaultZoom))
         }
-        
         mapView.setRegion(region, animated: true)
     }
-    
-    public func addAnnotations(annotations: [MLAnnotation]) {
+    public func addAnnotations(_ annotations: [MLAnnotation]) {
         DispatchQueue.main.async {
             // Let cluster manager manage clusters after loading all annotations
             self.clusterMgr.add(annotations)
             self.clusterMgr.reload(mapView: self.mapView)
         }
     }
-    
-    public func removeAnnotation(annotation: MLAnnotation) {
+    public func removeAnnotation(_ annotation: MLAnnotation) {
         self.clusterMgr.remove(annotation)
         
         // Check if mapView is nil
         guard let mapView = mapView else { return }
         mapView.removeAnnotation(annotation)
     }
-    
     public func removeAllAnnotations() {
         clusterMgr.removeAll()
         
@@ -149,7 +140,6 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         guard let mapView = mapView else { return }
         mapView.removeAnnotations(mapView.annotations)
     }
-    
     public func refreshMap(completion: ((Bool) -> Void)? = nil) {
         if let completion = completion {
             clusterMgr.reload(mapView: mapView, completion: completion)
@@ -157,15 +147,12 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
             clusterMgr.reload(mapView: mapView)
         }
     }
-    
-    public func setMaxZoomLevel(maxZoom: Double) {
+    public func setMaxZoomLevel(_ maxZoom: Double) {
         clusterMgr.maxZoomLevel = maxZoom
     }
-    
     public func getCurrentZoomLevel() -> Double {
         return clusterMgr.zoomLevel
     }
-    
     internal func cleanUpMapMemory() {
         if nil != mapView {
             self.mapView.removeAnnotations(mapView.annotations)
@@ -177,7 +164,6 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         
         clusterMgr.removeAll()
     }
-    
     /**
      Clean up memory usage.
      */
@@ -188,8 +174,6 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
         locationMgr?.delegate = nil
         locationMgr = nil
     }
-    
-    
     /**
      Setup LocationManager and start updating location.
      */
@@ -201,11 +185,9 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
             manager.startUpdatingLocation()
         }
     }
-    
-    public func setMinCountForClustering(minCount: Int) {
+    public func setMinCountForClustering(_ minCount: Int) {
         clusterMgr.minCountForClustering = minCount
     }
-    
     public func generateClusteringView(annotation: Any) -> UIView? {
         // Decide if annotation appears to be as an annotation or cluster
         if let annotation = annotation as? ClusterAnnotation {
@@ -233,7 +215,6 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
                     view = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 }
             }
-            
             if #available(iOS 11.0, *), annotation.useDefaultView {
                 (view as! MKMarkerAnnotationView).glyphImage = annotation.annotImg
                 (view as! MKMarkerAnnotationView).markerTintColor = annotation.annotBgColor
@@ -242,10 +223,8 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
             }
             return view
         }
-        
         return nil
     }
-    
     public func setClusterColor(color: UIColor) {
         self.clusterColor = color
     }
@@ -253,13 +232,11 @@ open class MapLoader: NSObject, MapLoaderFunction, MapClusterFunction {
 
 // MARK: - CLLocationManagerDelegate
 extension MapLoader: CLLocationManagerDelegate {
-    
     // Handle location updates.
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let lastLocation = locations.last {
             mostRecentLocation = lastLocation
         }
-        
         // Only center user location once when user open up the map
         if !didDefaultZoomIn {
             centerCurrentLocation(zoom: false)
@@ -286,7 +263,6 @@ extension MapLoader {
         case bounceIn
         case pop
     }
-    
     /**
      Perform the animation to multiple annotations.
      
@@ -338,7 +314,6 @@ extension MapLoader {
             }
         }
     }
-    
     /**
      Perform the animation to single annotation.
      

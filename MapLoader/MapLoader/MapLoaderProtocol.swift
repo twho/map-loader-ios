@@ -19,12 +19,10 @@ protocol MapLoaderFunction {
      - Parameter value: the default zoom in float value
      */
     func setDefaultZoom(_ value: Float)
-    
     /**
      Set map frame parameters and layout map. This function is Usually used in viewDidLayoutSubviews().
      */
     func layoutMapView()
-    
     /**
      Setup MapView and insert it to container.
      
@@ -33,61 +31,58 @@ protocol MapLoaderFunction {
      - Parameter delegate:     the MapView delegate
      */
     func setupMapView(mapContainer: UIView, viewAboveMap: UIView?, delegate: Any?)
-    
+    /**
+     Show location button.
+     
+     - Parameter show: Set true to show locate button. Set false to hide the button
+     */
+    func showLocateButton(_ show: Bool)
     /**
      Get MapView used by MapLoader.
      
      Returns any types of MapView
      */
     func getMapView() -> Any
-    
     /**
      Center current user location.
      
      - Paramter zoom: boolean to determine if zoom in MapView
      */
     func centerCurrentLocation(zoom: Bool)
-    
     /**
      Add annotations to MapView.
      
      - Parameter annotations: an array of MLAnnotations to be added to MapView
      */
-    func addAnnotations(annotations: [MLAnnotation])
-    
+    func addAnnotations(_ annotations: [MLAnnotation])
     /**
      Remove all annotations.
      */
     func removeAllAnnotations()
-    
     /**
      Remove certain annotation from the MapView.
      
      - Parameter annotation: the annotation to be removed from the map
      */
-    func removeAnnotation(annotation: MLAnnotation)
-    
+    func removeAnnotation(_ annotation: MLAnnotation)
     /**
      Refresh annotations on the MapView.
      
      - Paramter completion: the task to perform after map finished refresing. Set nil if there is no task
      */
     func refreshMap(completion: ((Bool)->Void)?)
-    
     /**
      Set maximum zoom level to stop clustering.
      
      - Parameter maxZoom: the maximum zoom level to stop clustering
      */
-    func setMaxZoomLevel(maxZoom: Double)
-    
+    func setMaxZoomLevel(_ maxZoom: Double)
     /**
      Get current zoom level.
      
      Returns a double value represents current zoom level
      */
     func getCurrentZoomLevel() -> Double
-    
     /**
      Clean up memory used by the MapView and mapLoader.
      */
@@ -104,7 +99,7 @@ protocol MapClusterFunction {
      
      - Parameter minCount: the minimum count for clustering annotations
      */
-    func setMinCountForClustering(minCount: Int)
+    func setMinCountForClustering(_ minCount: Int)
     
     /**
      Generate cluster views, only available for default map.
