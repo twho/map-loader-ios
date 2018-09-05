@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="InfoView" customModule="CustomMapAnnotation">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="182"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading ..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gqm-eC-wGG">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
+                    <color key="backgroundColor" red="0.5725490196078431" green="0.5725490196078431" blue="0.5725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="qaG-eN-Vo2"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="j0C-xv-bF5">
+                    <rect key="frame" x="24" y="55.999999999999993" width="366" height="73.333333333333314"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LSl-tf-2fn" customClass="ActionSheetButton" customModule="CustomMapAnnotation">
+                            <rect key="frame" x="0.0" y="0.0" width="73.333333333333329" height="73.333333333333329"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="LSl-tf-2fn" secondAttribute="height" multiplier="1:1" id="Beg-wl-bCW"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="8" maxY="0.0"/>
+                        </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="qUy-9C-Xcn">
+                            <rect key="frame" x="91.333333333333329" y="0.0" width="183.66666666666669" height="73.333333333333329"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Police Report" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uYA-Eo-ch3">
+                                    <rect key="frame" x="0.0" y="0.0" width="183.66666666666666" height="73.333333333333329"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="qUy-9C-Xcn" secondAttribute="height" multiplier="5:2" id="WTg-tT-kLi"/>
+                            </constraints>
+                        </stackView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eIX-g7-qHJ" customClass="ActionSheetButton" customModule="CustomMapAnnotation">
+                            <rect key="frame" x="293" y="0.0" width="73" height="73.333333333333329"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="eIX-g7-qHJ" secondAttribute="height" multiplier="1:1" id="YuA-Nv-XJx"/>
+                            </constraints>
+                            <inset key="titleEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
+                            <state key="normal">
+                                <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="LSl-tf-2fn" secondAttribute="bottom" id="HPG-h3-36w"/>
+                        <constraint firstItem="qUy-9C-Xcn" firstAttribute="leading" secondItem="LSl-tf-2fn" secondAttribute="trailing" constant="12" id="OSQ-a3-R7O"/>
+                        <constraint firstItem="LSl-tf-2fn" firstAttribute="leading" secondItem="j0C-xv-bF5" secondAttribute="leading" id="Uk8-Zz-0FU"/>
+                        <constraint firstItem="LSl-tf-2fn" firstAttribute="top" secondItem="j0C-xv-bF5" secondAttribute="top" id="dmt-ug-kly"/>
+                    </constraints>
+                </stackView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading ..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f4y-XR-jeK">
+                    <rect key="frame" x="24" y="141.33333333333334" width="366" height="24.666666666666657"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
+                    <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.36862745098039218" green="0.36862745098039218" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="GAO-gy-9DJ"/>
+                <constraint firstItem="f4y-XR-jeK" firstAttribute="top" secondItem="j0C-xv-bF5" secondAttribute="bottom" constant="12" id="J1s-BM-eaj"/>
+                <constraint firstAttribute="trailing" secondItem="j0C-xv-bF5" secondAttribute="trailing" constant="24" id="bAk-J8-ruk"/>
+                <constraint firstItem="f4y-XR-jeK" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="24" id="bka-s1-zdx"/>
+                <constraint firstItem="j0C-xv-bF5" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="24" id="cgJ-x6-as5"/>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="dVV-BW-t8T"/>
+                <constraint firstAttribute="bottom" secondItem="f4y-XR-jeK" secondAttribute="bottom" constant="16" id="dc6-HN-1bu"/>
+                <constraint firstAttribute="trailing" secondItem="gqm-eC-wGG" secondAttribute="trailing" id="fdc-J4-HWh"/>
+                <constraint firstItem="j0C-xv-bF5" firstAttribute="top" secondItem="gqm-eC-wGG" secondAttribute="bottom" constant="16" id="jEf-XE-bcE"/>
+                <constraint firstAttribute="trailing" secondItem="f4y-XR-jeK" secondAttribute="trailing" constant="24" id="jkV-yw-Wtr"/>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="zDg-k8-7iz"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnInfo" destination="LSl-tf-2fn" id="yUx-co-So6"/>
+                <outlet property="btnLike" destination="eIX-g7-qHJ" id="1dr-VE-xvK"/>
+                <outlet property="labelContent" destination="uYA-Eo-ch3" id="A9t-6H-3VT"/>
+                <outlet property="labelSubTitle" destination="f4y-XR-jeK" id="NYx-vv-rFZ"/>
+                <outlet property="labelTitle" destination="gqm-eC-wGG" id="Iaq-4z-gId"/>
+            </connections>
+            <point key="canvasLocation" x="-38" y="-208"/>
+        </view>
+    </objects>
+</document>

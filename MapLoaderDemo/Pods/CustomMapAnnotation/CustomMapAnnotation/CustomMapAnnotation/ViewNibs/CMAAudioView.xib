@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="AudioView" customModule="CustomMapAnnotation">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="208"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading ..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gqm-eC-wGG">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
+                    <color key="backgroundColor" red="0.5725490196078431" green="0.5725490196078431" blue="0.5725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="qaG-eN-Vo2"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="byl-A5-rIq">
+                    <rect key="frame" x="40" y="56" width="334" height="140"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="j0C-xv-bF5">
+                            <rect key="frame" x="0.0" y="0.0" width="334" height="95.666666666666671"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5xw-N1-VEp" customClass="ActionSheetButton" customModule="CustomMapAnnotation">
+                                    <rect key="frame" x="0.0" y="0.0" width="95.666666666666671" height="95.666666666666671"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="5xw-N1-VEp" secondAttribute="height" multiplier="1:1" id="8fN-MN-R37"/>
+                                    </constraints>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LSl-tf-2fn" customClass="ActionSheetButton" customModule="CustomMapAnnotation">
+                                    <rect key="frame" x="119.66666666666666" y="0.0" width="95" height="95.666666666666671"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="LSl-tf-2fn" secondAttribute="height" multiplier="1:1" id="Beg-wl-bCW"/>
+                                    </constraints>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eIX-g7-qHJ" customClass="ActionSheetButton" customModule="CustomMapAnnotation">
+                                    <rect key="frame" x="238.66666666666671" y="0.0" width="95.333333333333343" height="95.666666666666671"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="eIX-g7-qHJ" secondAttribute="height" multiplier="1:1" id="YuA-Nv-XJx"/>
+                                    </constraints>
+                                    <state key="normal">
+                                        <color key="titleColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </state>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading ..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f4y-XR-jeK">
+                            <rect key="frame" x="0.0" y="119.66666666666664" width="334" height="20.333333333333329"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
+                            <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" red="0.36862745098039218" green="0.36862745098039218" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="byl-A5-rIq" secondAttribute="bottom" constant="12" id="1uy-Nu-VgG"/>
+                <constraint firstItem="byl-A5-rIq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="7LF-qe-P8b"/>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="GAO-gy-9DJ"/>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="dVV-BW-t8T"/>
+                <constraint firstAttribute="trailing" secondItem="byl-A5-rIq" secondAttribute="trailing" constant="40" id="dko-mO-9bZ"/>
+                <constraint firstAttribute="trailing" secondItem="gqm-eC-wGG" secondAttribute="trailing" id="fdc-J4-HWh"/>
+                <constraint firstItem="byl-A5-rIq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="40" id="kf7-7d-fFX"/>
+                <constraint firstItem="byl-A5-rIq" firstAttribute="top" secondItem="gqm-eC-wGG" secondAttribute="bottom" constant="16" id="ynh-sO-Rc6"/>
+                <constraint firstItem="gqm-eC-wGG" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="zDg-k8-7iz"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnPlay" destination="LSl-tf-2fn" id="8Ck-Vq-sKk"/>
+                <outlet property="btnRecord" destination="eIX-g7-qHJ" id="Xt7-Nx-wJg"/>
+                <outlet property="btnStop" destination="5xw-N1-VEp" id="ZSb-yH-SMz"/>
+                <outlet property="labelSubTitle" destination="f4y-XR-jeK" id="k7C-Km-gvL"/>
+                <outlet property="labelTitle" destination="gqm-eC-wGG" id="Xrb-nj-GVL"/>
+            </connections>
+            <point key="canvasLocation" x="-38" y="-194"/>
+        </view>
+    </objects>
+</document>

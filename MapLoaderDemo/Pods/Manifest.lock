@@ -1,0 +1,24 @@
+PODS:
+  - CustomMapAnnotation (0.1.0)
+  - GoogleMaps (2.7.0):
+    - GoogleMaps/Maps (= 2.7.0)
+  - GoogleMaps/Base (2.7.0)
+  - GoogleMaps/Maps (2.7.0):
+    - GoogleMaps/Base
+
+DEPENDENCIES:
+  - CustomMapAnnotation
+  - GoogleMaps
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CustomMapAnnotation
+    - GoogleMaps
+
+SPEC CHECKSUMS:
+  CustomMapAnnotation: 7ae90c5b68673a287817631fd9a402bbc49c23c7
+  GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
+
+PODFILE CHECKSUM: a6e5b4a810e05a58d522b9aa94b2766e727954e4
+
+COCOAPODS: 1.5.3

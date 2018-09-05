@@ -1,0 +1,6 @@
+framework module CustomMapAnnotation {
+  umbrella header "CustomMapAnnotation-umbrella.h"
+
+  export *
+  module * { export * }
+}
