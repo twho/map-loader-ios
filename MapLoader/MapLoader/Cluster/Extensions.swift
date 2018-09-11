@@ -8,6 +8,7 @@
 
 import Foundation
 import MapKit
+import GoogleMaps
 
 extension MKMapRect {
     init(minX: Double, minY: Double, maxX: Double, maxY: Double) {
@@ -30,8 +31,22 @@ extension MKMapRect {
     }
 }
 
+extension GMSCoordinateBounds {
+    convenience init(minX: Double, minY: Double, maxX: Double, maxY: Double) {
+        self.init(coordinate: CLLocationCoordinate2D(latitude: minY, longitude: minX), coordinate: CLLocationCoordinate2D(latitude: maxY, longitude: maxX))
+    }
+    var minX: Double { return self.southWest.longitude }
+    var minY: Double { return self.southWest.latitude }
+    var midX: Double { return (self.southWest.longitude + self.northEast.longitude) / 2 }
+    var midY: Double { return (self.southWest.latitude + self.northEast.latitude) / 2 }
+    var maxX: Double { return self.northEast.longitude }
+    var maxY: Double { return self.northEast.latitude }
+}
+
 let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
 let MKMapPointMax = MKMapPointForCoordinate(CLLocationCoordinate2DMax)
+let GMapPointMax = GMSMapPoint(x: CLLocationCoordinate2DMax.longitude, y: CLLocationCoordinate2DMax.latitude)
+let GMapWorld = GMSCoordinateBounds.init(coordinate: CLLocationCoordinate2D(latitude: -90, longitude: -180), coordinate: CLLocationCoordinate2D(latitude: 90, longitude: 180))
 
 extension CLLocationCoordinate2D: Hashable {
     public var hashValue: Int {
@@ -108,16 +123,19 @@ extension Array where Element: MKAnnotation {
     }
 }
 
-extension MKPolyline {
-    convenience init(mapRect: MKMapRect) {
-        let points = [
-            MKMapPoint(x: mapRect.minX, y: mapRect.minY),
-            MKMapPoint(x: mapRect.maxX, y: mapRect.minY),
-            MKMapPoint(x: mapRect.maxX, y: mapRect.maxY),
-            MKMapPoint(x: mapRect.minX, y: mapRect.maxY),
-            MKMapPoint(x: mapRect.minX, y: mapRect.minY)
-        ]
-        self.init(points: points, count: points.count)
+extension Array where Element: MLMarker {
+    func subtracted(_ other: [Element]) -> [Element] {
+        return filter { item in !other.contains { $0.isEqual(item) } }
+    }
+    mutating func subtract(_ other: [Element]) {
+        self = self.subtracted(other)
+    }
+    mutating func add(_ other: [Element]) {
+        self.append(contentsOf: other)
+    }
+    @discardableResult
+    mutating func remove(_ item: Element) -> Element? {
+        return index { $0.isEqual(item) }.map { remove(at: $0) }
     }
 }
 

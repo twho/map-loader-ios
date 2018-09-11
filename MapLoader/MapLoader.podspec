@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.name         = "MapLoader"
   s.version      = "0.0.9"
-  s.summary      = "Easily loads maps, customized annotations and clusters."
+  s.summary      = "Easily loads iOS and Google maps, customized annotations and clusters."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -129,6 +129,7 @@ Pod::Spec.new do |s|
   #  you can include multiple dependencies to ensure it works.
 
   # s.requires_arc = true
+  s.static_framework = true
 
   s.swift_version = "4.1"
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }

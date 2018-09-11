@@ -10,34 +10,34 @@ import UIKit
 import CoreLocation
 import MapKit
 import CustomMapAnnotation
+import GoogleMaps
 
 // MapLoader annotation
 open class MLAnnotation: Annotation {
-    
     /**
      The foreground or entire image of the annotation.
      */
     open var annotImg: UIImage?
-    
     /**
      The background color of the annotation.
      */
     open var annotBgColor: UIColor?
-    
     /**
      The data to be stored with the annotation object.
      */
     open var data: Any?
-    
     /**
      Flag to determine if display customized callout view
      */
     open var isExpanded = false
-    
     /**
      Flag to determine if use iOS default annotation view
      */
     open var useDefaultView = false
+    
+    public override init() {
+        super.init()
+    }
     
     /**
      Init annotation view with a foreground image with a background color set on annotation view.
@@ -65,18 +65,60 @@ open class MLAnnotation: Annotation {
      - Parameter annotView:  the StyledAnnotationView of the annotation
      - Parameter data:       data in any type that are stored with annotation
      */
-    public init(coordinate: CLLocationCoordinate2D, annotView: StyledAnnotationView, data: Any?) {
-        super.init()
-        
-        self.coordinate = coordinate
-        self.annotImg = annotView.toImage()
-        self.annotBgColor = annotView.bgColor
-        self.useDefaultView = false
-        self.data = data
+    public convenience init(coordinate: CLLocationCoordinate2D, annotView: StyledAnnotationView, data: Any?) {
+        self.init(coordinate: coordinate, annotImg: annotView.toImage(), annotBgColor: annotView.bgColor, data: data)
     }
 }
 
-// MARK: BorderedClusterAnnotationView
+// MapLoader marker for Google map support
+open class MLMarker: MLAnnotation {
+    /**
+     Hold reference to the map marker for further changes.
+     */
+    open var marker: GMSMarker!
+    
+    public override init() {
+        super.init()
+    }
+    
+    /**
+     Init annotation view with a foreground image with a background color set on annotation view.
+     
+     - Parameter coordinate:     the geo-location of the annotation
+     - Parameter annotImg:       the foreground image of the annotation
+     - Parameter annotBgColor:   the background color of the annotation
+     - Parameter data:           data in any type that are stored with annotation
+     - Parameter useDefaultView: set true to use iOS default annotation view
+     */
+    public override init(coordinate: CLLocationCoordinate2D, annotImg: UIImage?, annotBgColor: UIColor?, data: Any?, useDefaultView: Bool = false) {
+        super.init()
+        
+        self.coordinate = coordinate
+        self.marker = GMSMarker(position: coordinate)
+        self.marker.icon = annotImg
+        self.marker.iconView?.backgroundColor = annotBgColor
+        self.useDefaultView = useDefaultView
+        self.data = data
+    }
+    
+    /**
+     Init annotation view with StyledAnnotationView class.
+     
+     - Parameter coordinate: the geo-location of the annotation
+     - Parameter annotView:  the StyledAnnotationView of the annotation
+     - Parameter data:       data in any type that are stored with annotation
+     */
+    public convenience init(coordinate: CLLocationCoordinate2D, annotView: StyledAnnotationView, data: Any?) {
+        self.init(coordinate: coordinate, annotImg: annotView.toImage(), annotBgColor: annotView.bgColor, data: data)
+    }
+    
+    public convenience init(annotation: MLAnnotation) {
+        self.init(coordinate: annotation.coordinate, annotImg: annotation.annotImg, annotBgColor: annotation.annotBgColor, data: annotation.data)
+    }
+}
+
+
+// MARK: - BorderedClusterAnnotationView
 open class BorderedClusterAnnotationView: ClusterAnnotationView {
     /**
      The border color of the cluster icon.
