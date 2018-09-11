@@ -8,6 +8,8 @@
 
 import CoreLocation
 import MapKit
+import GoogleMaps
+import CustomMapAnnotation
 
 open class ClusterManager {
     
@@ -205,12 +207,10 @@ open class ClusterManager {
         
         zoomLevel = zoomScale.zoomLevel
         let scaleFactor = zoomScale / (cellSize ?? zoomScale.cellSize)
-        
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
         let minY = Int(floor(visibleMapRect.minY * scaleFactor))
         let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
-        
         var allAnnotations = [MKAnnotation]()
         
         for x in minX...maxX {
@@ -298,7 +298,61 @@ open class ClusterManager {
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
     }
-    
 }
 
-//public class MKBasePolyline: MKPolyline {}
+// Extension for Google map support
+extension ClusterManager {
+    /**
+     Reload the annotations on the map view.
+     
+     - Parameters:
+     - mapView: The map view object to reload.
+     */
+    open func reload(mapView: GMSMapView) {
+        reload(mapView: mapView) { finished in }
+    }
+    
+    open func reload(mapView: GMSMapView, completion: @escaping (Bool) -> Void) {
+        let mapBounds = mapView.bounds
+        let visibleBounds = GMSCoordinateBounds.init(region: mapView.projection.visibleRegion())
+        let p1 = MKMapPointForCoordinate (visibleBounds.northEast)
+        let p2 = MKMapPointForCoordinate (visibleBounds.southWest)
+        let visibleMapRect = MKMapRectMake(fmin(p1.x,p2.x), fmin(p1.y,p2.y), fabs(p1.x-p2.x), fabs(p1.y-p2.y))
+        let visibleMapRectWidth = visibleMapRect.size.width
+        let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
+        queue.cancelAllOperations()
+        queue.addBlockOperation { [weak self, weak mapView] operation in
+            guard let `self` = self, let mapView = mapView else { return }
+            autoreleasepool { () -> Void in
+                let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
+                guard !operation.isCancelled else { return completion(false) }
+                DispatchQueue.main.async { [weak self, weak mapView] in
+                    guard let `self` = self, let mapView = mapView else { return }
+                    self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
+                    completion(true)
+                }
+            }
+        }
+    }
+    
+    open func display(mapView: GMSMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        assert(Thread.isMainThread, "This function must be called from the main thread.")
+        let gMapLoader = GoogleMapLoader()
+        for annotation in toAdd {
+            if let cluster = (annotation as? ClusterAnnotation) {
+                cluster.marker = GMSMarker(position: annotation.coordinate)
+                cluster.marker.iconView = gMapLoader.generateClusteringView(annotation: cluster)
+                cluster.marker.map = mapView
+            } else if let marker = (annotation as? MLMarker) {
+                marker.marker.map = mapView
+            }
+        }
+        for annotation in toRemove {
+            if let cluster = (annotation as? ClusterAnnotation), let marker = cluster.marker {
+                marker.map = nil
+            } else if let marker = (annotation as? MLMarker) {
+                marker.marker.map = nil
+            }
+        }
+    }
+}

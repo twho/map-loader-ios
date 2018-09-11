@@ -14,7 +14,7 @@
 		3071E04E21402EB500ED1C14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3071E04C21402EB500ED1C14 /* LaunchScreen.storyboard */; };
 		3071E09B2140309900ED1C14 /* QuadTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0902140309900ED1C14 /* QuadTree.swift */; };
 		3071E09C2140309900ED1C14 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0912140309900ED1C14 /* Extensions.swift */; };
-		3071E09D2140309900ED1C14 /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0922140309900ED1C14 /* Cluster.swift */; };
+		3071E09D2140309900ED1C14 /* ClusterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0922140309900ED1C14 /* ClusterManager.swift */; };
 		3071E09E2140309900ED1C14 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0932140309900ED1C14 /* Annotation.swift */; };
 		3071E09F2140309900ED1C14 /* MLAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0952140309900ED1C14 /* MLAnnotation.swift */; };
 		3071E0A02140309900ED1C14 /* MapLoaderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3071E0972140309900ED1C14 /* MapLoaderProtocol.swift */; };
@@ -36,7 +36,7 @@
 		3071E08F2140309900ED1C14 /* Cluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cluster.h; sourceTree = "<group>"; };
 		3071E0902140309900ED1C14 /* QuadTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadTree.swift; sourceTree = "<group>"; };
 		3071E0912140309900ED1C14 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		3071E0922140309900ED1C14 /* Cluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
+		3071E0922140309900ED1C14 /* ClusterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClusterManager.swift; sourceTree = "<group>"; };
 		3071E0932140309900ED1C14 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		3071E0952140309900ED1C14 /* MLAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLAnnotation.swift; sourceTree = "<group>"; };
 		3071E0962140309900ED1C14 /* MapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapLoader.h; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 				3071E08F2140309900ED1C14 /* Cluster.h */,
 				3071E0902140309900ED1C14 /* QuadTree.swift */,
 				3071E0912140309900ED1C14 /* Extensions.swift */,
-				3071E0922140309900ED1C14 /* Cluster.swift */,
+				3071E0922140309900ED1C14 /* ClusterManager.swift */,
 				3071E0932140309900ED1C14 /* Annotation.swift */,
 			);
 			path = Cluster;
@@ -284,7 +284,7 @@
 				3071E04421402EB400ED1C14 /* AppDelegate.swift in Sources */,
 				3071E09C2140309900ED1C14 /* Extensions.swift in Sources */,
 				3071E09E2140309900ED1C14 /* Annotation.swift in Sources */,
-				3071E09D2140309900ED1C14 /* Cluster.swift in Sources */,
+				3071E09D2140309900ED1C14 /* ClusterManager.swift in Sources */,
 				3071E0A22140309900ED1C14 /* MapLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

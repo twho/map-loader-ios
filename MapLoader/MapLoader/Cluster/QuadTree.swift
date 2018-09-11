@@ -69,7 +69,6 @@ class QuadTreeNode {
     init(rect: MKMapRect) {
         self.rect = rect
     }
-    
 }
 
 extension QuadTreeNode: AnnotationsContainer {

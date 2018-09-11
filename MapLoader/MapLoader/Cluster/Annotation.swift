@@ -12,7 +12,7 @@ open class Annotation: MKPointAnnotation {
     open var style: ClusterAnnotationStyle?
 }
 
-open class ClusterAnnotation: Annotation {
+open class ClusterAnnotation: MLMarker {
     open var annotations = [MKAnnotation]()
 
     open override func isEqual(_ object: Any?) -> Bool {
