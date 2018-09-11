@@ -13,21 +13,11 @@ import CustomMapAnnotation
 
 class ViewController: UIViewController {
     /**
-     Sample geo points.
-     */
-    let geoCenter = CLLocationCoordinate2D(latitude: 42.35619599, longitude: -71.05957196)
-    let geoPoint1 = CLLocationCoordinate2D(latitude: 42.35273449, longitude: -71.06350985)
-    let geoPoint2 = CLLocationCoordinate2D(latitude: 42.35307061, longitude: -71.05916667)
-    let geoPoint3 = CLLocationCoordinate2D(latitude: 42.35130579, longitude: -71.05957196)
-    let geoPoint4 = CLLocationCoordinate2D(latitude: 42.36098194, longitude: -71.05897865)
-    let geoPoint5 = CLLocationCoordinate2D(latitude: 42.36326194, longitude: -71.05080375)
-    let geoPoint6 = CLLocationCoordinate2D(latitude: 42.34798343, longitude: -71.05960375)
-    /**
      Sample annotation images.
      */
     let annotImg1 = StyledAnnotationView(annotImg: .gas, background: .square)
     let annotImg2 = StyledAnnotationView(annotImg: .police, background: .heart)
-    let annotImg3 = StyledAnnotationView(annotImg: .hazard, color: UIColor.lightGray, background: .bubble, bgColor: UIColor.blue)
+    let annotImg3 = StyledAnnotationView(annotImg: .hazard, color: UIColor.white, background: .bubble, bgColor: UIColor.blue)
     let annotImg4 = StyledAnnotationView(annotImg: .charging, background: .flag, bgColor: UIColor.orange)
     let annotImg5 = StyledAnnotationView(annotImg: .personal, background: .circle, bgColor: UIColor.purple)
     let annotImg6 = StyledAnnotationView(annotImg: .hazard, background: .square, bgColor: UIColor.red)
@@ -35,71 +25,106 @@ class ViewController: UIViewController {
     
     // MARK: - In-class variables
     private var mapLoader: MapLoader!
-    private var googleMapLoader: GoogleMapLoader!
-    private var lastLocation: CLLocationCoordinate2D?
-    private var useGoogle: Bool = true
+    private var lastLocation: CLLocation?
+    private lazy var locationMgr: CLLocationManager = {
+        let manager = CLLocationManager()
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.delegate = self
+        return manager
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        googleMapLoader = GoogleMapLoader()
-        refreshMap()
+        
+        locationMgr.startUpdatingLocation()
+        mapLoader = GoogleMapLoader()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        useGoogle ? googleMapLoader.setupMapView(mapContainer: self.view, viewAboveMap: nil, delegate: self) : mapLoader.setupMapView(mapContainer: self.view, viewAboveMap: nil, delegate: self)
-        if useGoogle {
-            googleMapLoader.isLocationButtonShown = true
-        } else {
-            mapLoader.isLocationButtonShown = true
-        }
+        mapLoader.setupMapView(mapContainer: self.view, viewAboveMap: nil, delegate: self)
+        mapLoader.isLocationButtonShown = true
+        refreshMap()
     }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         // Set mapView fill the screen and assign the delegate
-        useGoogle ? googleMapLoader.layoutMapView() : mapLoader.layoutMapView()
+        mapLoader.layoutMapView()
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
+    
     @IBAction func didSwitchMap(_ sender: UISegmentedControl) {
-        useGoogle ? googleMapLoader.cleanUpMapMemory() : mapLoader.cleanUp()
-        useGoogle = sender.selectedSegmentIndex == 0
+        mapLoader.cleanUp()
         switch sender.selectedSegmentIndex {
         case 0:
-            googleMapLoader = GoogleMapLoader()
+            mapLoader = GoogleMapLoader()
         case 1:
             mapLoader = MapLoader()
         default:
-            googleMapLoader = GoogleMapLoader()
+            mapLoader = GoogleMapLoader()
         }
         self.viewWillAppear(true)
-        refreshMap()
     }
+    
     private func refreshMap() {
-        useGoogle ? googleMapLoader.removeAllAnnotations() : mapLoader.removeAllAnnotations()
-        
+        mapLoader.removeAllAnnotations()
         // Sample location and image set
         let imgSet = [annotImg1, annotImg2, annotImg3, annotImg4, annotImg5, annotImg6, annotImg7]
-        let locSet = [geoCenter, geoPoint1, geoPoint2, geoPoint3, geoPoint4, geoPoint5, geoPoint6]
+        var locSet = getMockLocationsFor(coordinate: mapLoader.defaultLocation, itemCount: 15)
+        if let lastLocation = self.lastLocation {
+            locSet = getMockLocationsFor(coordinate: CLLocationCoordinate2D(latitude: lastLocation.coordinate.latitude, longitude: lastLocation.coordinate.longitude), itemCount: 15)
+        }
         DispatchQueue.main.async {
-            if self.useGoogle {
-                var markers: [MLMarker] = []
-                for i in 0..<locSet.count {
-                    let annotation = MLMarker(coordinate: locSet[i], annotView: imgSet[i], data: nil)
-                    markers.append(annotation)
+            var annotations: [MLAnnotation] = []
+            for i in 0..<locSet.count {
+                var annotation = MLAnnotation(coordinate: locSet[i], annotView: imgSet[i%7], data: nil)
+                if let _ = (self.mapLoader as? GoogleMapLoader) {
+                    annotation = MLMarker(coordinate: locSet[i], annotView: imgSet[i%7], data: nil)
                 }
-                self.googleMapLoader.addAnnotations(markers)
-            } else {
-                var annotations: [MLAnnotation] = []
-                for i in 0..<locSet.count {
-                    let annotation = MLAnnotation(coordinate: locSet[i], annotView: imgSet[i], data: nil)
-                    annotations.append(annotation)
-                }
-                self.mapLoader.addAnnotations(annotations)
+                annotations.append(annotation)
             }
+            self.mapLoader.addAnnotations(annotations)
+        }
+    }
+    
+    /**
+     Generate random location around user's location.
+     ref: inorganik@Github
+     
+     - Parameter location:  User's current location.
+     - Parameter itemCount: The number of fake location coordinates to be generated.
+     
+     - Returns an array of geo location
+     */
+    func getMockLocationsFor(coordinate: CLLocationCoordinate2D, itemCount: Int) -> [CLLocationCoordinate2D] {
+        let baseLatitude = round((coordinate.latitude - 0.007) * 10000) / 10000
+        let baseLongitude = round((coordinate.longitude - 0.008) * 10000) / 10000
+        
+        var items = [CLLocationCoordinate2D]()
+        for _ in 0..<itemCount {
+            let location = CLLocationCoordinate2D(latitude: baseLatitude + Double(arc4random_uniform(140)) * 0.0001, longitude: baseLongitude + Double(arc4random_uniform(140)) * 0.0001)
+            items.append(location)
+        }
+        return items
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+}
+
+extension ViewController: CLLocationManagerDelegate {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let lastLocation = locations.last else { return }
+        let distance = self.lastLocation?.distance(from: lastLocation)
+        // Refresh the map markers only if the center is changed to more than 30 meters away from its origin
+        if nil == distance || !distance!.isLess(than: 30.0) {
+            self.lastLocation = lastLocation
+            refreshMap()
         }
     }
 }
+
 // MARK: - MKMapViewDelegate
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -129,10 +154,21 @@ extension ViewController: MKMapViewDelegate {
 // MARK: - GMSMapViewDelegate
 extension ViewController: GMSMapViewDelegate {
     func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-        googleMapLoader.centerCurrentLocation(zoom: true)
+        mapLoader.centerCurrentLocation(zoom: true)
         return true
     }
-    func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-        googleMapLoader.refreshMap()
+    
+    func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+        
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        guard let view = marker.iconView else { return false }
+        mapLoader.animate(annotation: view, animation: .zoomIn, duration: 0.15)
+        return true
+    }
+    
+    func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        mapLoader.refreshMap()
     }
 }

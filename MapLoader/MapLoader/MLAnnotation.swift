@@ -90,13 +90,13 @@ open class MLMarker: MLAnnotation {
      - Parameter data:           data in any type that are stored with annotation
      - Parameter useDefaultView: set true to use iOS default annotation view
      */
-    public override init(coordinate: CLLocationCoordinate2D, annotImg: UIImage?, annotBgColor: UIColor?, data: Any?, useDefaultView: Bool = false) {
+    public init(coordinate: CLLocationCoordinate2D, annotImg: UIImage?, data: Any?, useDefaultView: Bool = false) {
         super.init()
         
         self.coordinate = coordinate
         self.marker = GMSMarker(position: coordinate)
-        self.marker.icon = annotImg
-        self.marker.iconView?.backgroundColor = annotBgColor
+        self.marker.iconView = UIImageView(image: annotImg)
+        self.marker.appearAnimation = .pop
         self.useDefaultView = useDefaultView
         self.data = data
     }
@@ -109,11 +109,11 @@ open class MLMarker: MLAnnotation {
      - Parameter data:       data in any type that are stored with annotation
      */
     public convenience init(coordinate: CLLocationCoordinate2D, annotView: StyledAnnotationView, data: Any?) {
-        self.init(coordinate: coordinate, annotImg: annotView.toImage(), annotBgColor: annotView.bgColor, data: data)
+        self.init(coordinate: coordinate, annotImg: annotView.toImage(), data: data)
     }
     
     public convenience init(annotation: MLAnnotation) {
-        self.init(coordinate: annotation.coordinate, annotImg: annotation.annotImg, annotBgColor: annotation.annotBgColor, data: annotation.data)
+        self.init(coordinate: annotation.coordinate, annotImg: annotation.annotImg, data: annotation.data)
     }
 }
 
