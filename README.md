@@ -35,7 +35,7 @@ let mapLoader = MapLoader()
 ```swift
 let mapLoader = GoogleMapLoader()
 ```
-Note: You need to set API key in AppDelegate.swift before having access to Google Map, see __Supplementals__ for more details.
+- Note: You need to set API key in AppDelegate.swift before having access to Google map, see __Supplementals__ for more details.
 
 ### Step 2: Insert view to your current view in viewWillAppear() function
 ```swift
@@ -44,7 +44,7 @@ override func viewWillAppear(_ animated: Bool) {
     mapLoader.setupMapView(mapContainer: self.view, viewAboveMap: nil, delegate: self)
 }
 ```
-Note: You need to set delegate if you need to use ```MKMapViewDelegate```. Otherwise, you can leave it ```nil```
+- Note: You need to set delegate if you need to use ```MKMapViewDelegate```. Otherwise, you can leave it ```nil```
 
 ### Step 3: Resize the MapView in viewDidLayoutSubviews() function
 ```swift
@@ -56,7 +56,7 @@ override func viewDidLayoutSubviews() {
 
 ### Follow the instructions below to use __clusters__ and __annotations/markers__.
 ### Step 4: Add your customized annotations
-#### Use StyledAnnotationView for annotation views
+- #### Use StyledAnnotationView for annotation views
 ```swift
 var annotations: [MLAnnotation] = []  
 let annotView = StyledAnnotationView(annotImg: .hazard, color: UIColor.white, background: .bubble, bgColor: UIColor.blue)
@@ -64,7 +64,7 @@ let annotation = MLAnnotation(coordinate: CLLocationCoordinate2D(latitude: 42.36
 annotations.append(annotation)  
 mapLoader.addAnnotations(annotations: annotations)
 ```
-#### Simply change the object to MLMarker for Google Map use
+- #### Simply change the object to MLMarker for Google map use
 ```swift
 let annotation = MLMarker(coordinate: CLLocationCoordinate2D(latitude: 42.36, longitude: -71.06), annotView: annotView, data: nil)  
 ```
@@ -81,21 +81,21 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
     return mapLoader.generateClusteringView(annotation: annotation) as? MKAnnotationView
 }
 ```
-#### For Google map
+- #### Google map use GMSMapViewDelegate
 Refresh the map after users finish their gestures.
 
 ```swift
 func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
-	mapLoader.refreshMap()
+    mapLoader.refreshMap()
 }
 ```
 ## Supplementals
-### Use your own image as annotation views
+- ### Use your own image as annotation views
 ```swift
 let image = UIImage(named: "your_image")
 let annotView = StyledAnnotationView(annotImg: image, background: .bubble, bgColor: UIColor.blue)
 ```
-### Built-in annotation-like background images available. 
+- ### Built-in annotation-like background images available. 
 ```swift
 /**
 Built-in background images.
@@ -114,7 +114,7 @@ public enum BgImg {
     case flag
 }
 ```
-#### Set Google Map API key in AppDelegate.swift
+- ### Set Google map API key in AppDelegate.swift
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     GoogleMapLoader.setAPIKey("YOUR_API_KEY")
