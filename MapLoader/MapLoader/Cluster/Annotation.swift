@@ -14,7 +14,7 @@ open class Annotation: MKPointAnnotation {
 
 open class ClusterAnnotation: MLMarker {
     open var annotations = [MKAnnotation]()
-
+    
     open override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? ClusterAnnotation else { return false }
         

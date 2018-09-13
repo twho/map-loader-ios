@@ -32,6 +32,10 @@ class ViewController: UIViewController {
         manager.delegate = self
         return manager
     }()
+    /**
+     Optional: for animation use and deselect the marker
+     */
+    private var selectedMarker: GMSMarker?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +57,9 @@ class ViewController: UIViewController {
         mapLoader.layoutMapView()
     }
     
+    /**
+     User select on segment control widget.
+     */
     @IBAction func didSwitchMap(_ sender: UISegmentedControl) {
         mapLoader.cleanUp()
         switch sender.selectedSegmentIndex {
@@ -66,6 +73,9 @@ class ViewController: UIViewController {
         self.viewWillAppear(true)
     }
     
+    /**
+     Refresh map annotations/markers.
+     */
     private func refreshMap() {
         mapLoader.removeAllAnnotations()
         // Sample location and image set
@@ -134,9 +144,6 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard nil == (view.annotation as? ClusterAnnotation), let _ = (view.annotation as? MLAnnotation) else { return }
         mapLoader.animate(annotation: view, animation: .zoomIn, duration: 0.25)
-        if let annotation = (view.annotation as? MLAnnotation) {
-            annotation.isExpanded = true
-        }
     }
     
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
@@ -159,12 +166,19 @@ extension ViewController: GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-        
+        // Optional: for animation use
+        if let marker = selectedMarker, let view = marker.iconView {
+            mapLoader.animate(annotation: view, animation: .zoomOut, duration: 0.15)
+        }
+        // Animation code ends here
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        // Optional: for animation use
         guard let view = marker.iconView else { return false }
+        selectedMarker = marker
         mapLoader.animate(annotation: view, animation: .zoomIn, duration: 0.15)
+        // Animation code ends here
         return true
     }
     

@@ -68,7 +68,7 @@ open class GoogleMapLoader: MapLoader {
     /**
      Set Google API key
      */
-    public static func setAPIKey(key: String) {
+    public static func setAPIKey(_ key: String) {
         GMSServices.provideAPIKey(key)
     }
     
