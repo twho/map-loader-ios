@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "MapLoader"
-  s.version      = "0.0.9"
+  s.version      = "0.1.0"
   s.summary      = "Easily loads iOS and Google maps, customized annotations and clusters."
 
   # This description is used to generate tags and improve search results.
@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/twho/MapLoader-iOS.git", :tag => "0.0.9" }
+  s.source       = { :git => "https://github.com/twho/MapLoader-iOS.git", :tag => "0.1.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -89,7 +89,7 @@ Pod::Spec.new do |s|
   #
 
   s.source_files  = "MapLoader", "MapLoader/**/*.{swift,h,m}"
-  s.exclude_files = "MapLoader/MapLoaderDemo/**", "MapLoaderDemo/**", "MapLoader/MapLoaderTests/**"
+  s.exclude_files = "MapLoader/MapLoaderDemo/**", "MapLoaderDemo/**", "MapLoader/MapLoaderTests/**", "Images/**"
 
   # s.public_header_files = "Classes/**/*.h"
 

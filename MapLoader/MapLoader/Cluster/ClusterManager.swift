@@ -41,7 +41,7 @@ open class ClusterManager {
      
      The default is 2.
      */
-    open var minCountForClustering: Int = 2
+    open var minCountForClustering: Int = 3
     
     /**
      Whether to remove invisible annotations.
@@ -315,8 +315,8 @@ extension ClusterManager {
     open func reload(mapView: GMSMapView, completion: @escaping (Bool) -> Void) {
         let mapBounds = mapView.bounds
         let visibleBounds = GMSCoordinateBounds.init(region: mapView.projection.visibleRegion())
-        let p1 = MKMapPointForCoordinate (visibleBounds.northEast)
-        let p2 = MKMapPointForCoordinate (visibleBounds.southWest)
+        let p1 = MKMapPointForCoordinate(visibleBounds.northEast)
+        let p2 = MKMapPointForCoordinate(visibleBounds.southWest)
         let visibleMapRect = MKMapRectMake(fmin(p1.x,p2.x), fmin(p1.y,p2.y), fabs(p1.x-p2.x), fabs(p1.y-p2.y))
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
@@ -341,6 +341,7 @@ extension ClusterManager {
         for annotation in toAdd {
             if let cluster = (annotation as? ClusterAnnotation) {
                 cluster.marker = GMSMarker(position: annotation.coordinate)
+                cluster.marker.appearAnimation = .pop
                 cluster.marker.iconView = gMapLoader.generateClusteringView(annotation: cluster)
                 cluster.marker.map = mapView
             } else if let marker = (annotation as? MLMarker) {
