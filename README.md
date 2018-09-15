@@ -80,6 +80,10 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     return mapLoader.generateClusteringView(annotation: annotation) as? MKAnnotationView
 }
+
+func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    mapLoader.refreshMap()
+}
 ```
 - #### Google map use GMSMapViewDelegate
 Refresh the map after users finish their gestures.
@@ -90,7 +94,7 @@ func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
 }
 ```
 ## Supplementals
-- ### Use your own image as annotation views
+- ### Use your own image as annotation view
 ```swift
 let image = UIImage(named: "your_image")
 let annotView = StyledAnnotationView(annotImg: image, background: .bubble, bgColor: UIColor.blue)
